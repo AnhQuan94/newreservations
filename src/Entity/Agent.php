@@ -2,16 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\TypeRepository;
+use App\Repository\AgentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=TypeRepository::class)
- * @ORM\Table(name="types")
+ * @ORM\Entity(repositoryClass=AgentRepository::class)
+ * @ORM\Table(name="agents")
  */
-class Type
+class Agent
 {
     /**
      * @ORM\Id()
@@ -23,10 +23,15 @@ class Type
     /**
      * @ORM\Column(type="string", length=60)
      */
-    private $type;
+    private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Artist::class, mappedBy="types")
+     * @ORM\Column(type="string", length=255)
+     */
+    private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Artist::class, mappedBy="agent")
      */
     private $artists;
 
@@ -40,14 +45,26 @@ class Type
         return $this->id;
     }
 
-    public function getType(): ?string
+    public function getName(): ?string
     {
-        return $this->type;
+        return $this->name;
     }
 
-    public function setType(string $type): self
+    public function setName(string $name): self
     {
-        $this->type = $type;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
@@ -64,7 +81,7 @@ class Type
     {
         if (!$this->artists->contains($artist)) {
             $this->artists[] = $artist;
-            $artist->addType($this);
+            $artist->setAgent($this);
         }
 
         return $this;
@@ -74,7 +91,10 @@ class Type
     {
         if ($this->artists->contains($artist)) {
             $this->artists->removeElement($artist);
-            $artist->removeType($this);
+            // set the owning side to null (unless already changed)
+            if ($artist->getAgent() === $this) {
+                $artist->setAgent(null);
+            }
         }
 
         return $this;
