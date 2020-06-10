@@ -1,20 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello LocalityController!{% endblock %}
+{% block title %}Liste des Localities{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<h1>Liste des {{resource}}</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/AnhQuan/Desktop/NewReserv/newreservations/src/Controller/LocalityController.php'|file_link(0) }}">src/Controller/LocalityController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/AnhQuan/Desktop/NewReserv/newreservations/templates/locality/index.html.twig'|file_link(0) }}">templates/locality/index.html.twig</a></code></li>
-    </ul>
-</div>
+<ul>
+{% for locality in localities %}
+    <li>{{ locality.locality }}</li>
+{% endfor %}
+</ul>
+
 {% endblock %}
