@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use App\Entity\Location;
 use Cocur\Slugify\Slugify;
@@ -48,16 +48,18 @@ class LocationFixtures extends Fixture implements DependentFixtureInterface
         ];
         
         foreach ($locations as $record) {
-		$slugify = new Slugify();
-	$location_slug = $slugify->slugify($record['designation']);
+            $slugify = new Slugify();
+            
             $location = new Location();
-            $location->setSlug($location_slug);
+            $location->setSlug($slugify->slugify($record['designation']));
             $location->setDesignation($record['designation']);
             $location->setAddress($record['address']);
             $location->setLocality($this->getReference($record['locality']));
             $location->setWebsite($record['website']);
             $location->setPhone($record['phone']);
             $manager->persist($location);
+            
+            $this->addReference($location->getSlug(), $location);
         }
 
         $manager->flush();
